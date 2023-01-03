@@ -7,15 +7,13 @@ export default function MyEditor(props) {
   return (
     <CKEditor
       editor={ClassicEditor}
-      config={{
-        simpleUpload: {
-          uploadUrl: "/api/upload",
-          withCredentials: true,
-        },
-      }}
-      onChange={(event, editor) => {
-        console.log(editor.getData());
-      }}
+      config={
+        {
+          // input your configurations..
+        }
+      }
+      data={props.data}
+      onChange={props.onChange}
     />
   );
 }

@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CKEditor5 Example App in Next.js(with additional plugins)
 
-## Getting Started
+Example app using CKEditor5 with additional plugins in Next.js
 
-First, run the development server:
+## Tutorials
+
+### Install `@ckeditor/ckeditor5-react`
 
 ```bash
-npm run dev
-# or
-yarn dev
+yarn add @ckeditor/ckeditor5-react
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Download Custom Editor
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Download the customized package through the [online builder](<(https://ckeditor.com/ckeditor-5/online-builder/)>) provided by CKEditor.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### Install Custom Package
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. Move the downloaded package to the bottom of the `custom_modules` directory.
+2. Add the dependency of the package to package.json as follows.
+   ```javascript
+   // package.json
+   "dependency": {
+    ...
+    "@ckeditor/ckeditor5-build-classic": "file:custom_modules/ckeditor5-build-classic-custom",
+    ...
+   }
+   ```
+3. Install
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+   ```bash
+   yarn install
+   ```
 
-## Learn More
+### Using Component
 
-To learn more about Next.js, take a look at the following resources:
+```javascript
+// components/MyEditor/MyEditor.js
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+import React from "react";
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+export default function MyEditor(props) {
+  return (
+    <CKEditor
+      editor={ClassicEditor}
+      config={
+        {
+          // input your configurations..
+        }
+      }
+      data={props.data}
+      onChange={props.onChange}
+    />
+  );
+}
+```
 
-## Deploy on Vercel
+For only client-side rendering
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```javascript
+// component/MyEditor/index.js
+import dynamic from "next/dynamic";
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+const MyEditorWithNoSSR = dynamic(import("./MyEditor"), { ssr: false });
+
+export default MyEditorWithNoSSR;
+```
+
+```javascript
+// pages/index.js
+import styles from "../styles/Home.module.css";
+import MyEditor from "../components/MyEditor";
+
+export default function Home() {
+  return (
+    <main className={styles.main}>
+      <h1>CKEditor5 Example App in Next.js</h1>
+      <MyEditor
+        data={"<p>Hello world!</p>"}
+        onChange={(event, editor) => {
+          console.log(editor.getData());
+        }}
+      />
+    </main>
+  );
+}
+```
+
+## Author
+
+[deokchanjeong](https://github.com/deokchanjeong)
